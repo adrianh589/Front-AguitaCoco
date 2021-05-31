@@ -2,7 +2,7 @@
 <div class="row mt-3">
 
   <!-- Columna de ordenar -->
-  <div class="col-6">
+  <div class="col-8">
     <!-- Barra de ordenar productos -->
     <select class="form-select">
       <option selected [disabled]="true">Ordenar</option>
@@ -12,7 +12,7 @@
   </div>
 
   <!-- Columna carrito y crear producto -->
-  <div class="col-6">
+  <div class="col">
     <!-- Boton crear -->
     <button
       class="btn btn-success mx-1"
@@ -68,7 +68,7 @@
         <input type="text" class="form-control" formControlName="description">
 
         <label>Precio</label>
-        <input type="text" class="form-control" formControlName="price">
+        <input type="number" class="form-control" formControlName="price">
 
 
       </div>
