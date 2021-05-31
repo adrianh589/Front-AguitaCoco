@@ -1,130 +1,125 @@
 <!-- Barra de ordenar y boton de crear y carrito de compras -->
 <div class="row mt-3">
 
-  <!-- Columna de ordenar -->
-  <div class="col-8">
-    <!-- Barra de ordenar productos -->
-    <select class="form-select">
+    <!-- Columna de ordenar -->
+    <div class="col-6">
+        <!-- Barra de ordenar productos -->
+        <select class="form-select">
       <option selected [disabled]="true">Ordenar</option>
       <option value="1">Del mas reciente al mas antiguo</option>
       <option value="2">Del mas antiguo al mas reciente</option>
     </select>
-  </div>
+    </div>
 
-  <!-- Columna carrito y crear producto -->
-  <div class="col">
-    <!-- Boton crear -->
-    <button
-      class="btn btn-success mx-1"
-      (click)="open(content)"
-    >
+    <!-- Columna carrito y crear producto -->
+    <div class="col-6">
+        <!-- Boton crear -->
+        <button class="btn btn-success mx-1" (click)="open(content)">
       Crear nuevo producto
     </button>
 
-    <!-- Carrito de compras -->
-    <button class="btn btn-success mx-1"
-            (click)="open(content2)"
-    >
+        <!-- Carrito de compras -->
+        <button class="btn btn-success mx-1" (click)="open(content2)">
       <i class="fas fa-shopping-cart"></i>
-      <span class="badge bg-danger">{{productService.carrito.length}}</span>
+      <span class="badge bg-danger">{{cart.length}}</span>
     </button>
 
-  </div>
+    </div>
 
 </div>
 
 <!-- Productos listados -->
 <div class="row">
 
-  <div class="col-3 my-3" *ngFor="let product of products">
-    <app-products
-      [titulo]="product.title"
-      [descripcion]="product.description"
-      [product]="product"
-      #product.id
-    ></app-products>
-  </div>
+    <div class="col-3 my-3" *ngFor="let product of products">
+        <app-products [titulo]="product.title" [descripcion]="product.description" [product]="product" #product.id></app-products>
+    </div>
 
 </div>
 
 <!-- Modal para la creacion de productos -->
 
 <ng-template #content let-modal [formGroup]="productForm">
-  <div class="modal-header" >
-    <h4 class="modal-title" id="modal-basic-title">Crear Producto</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Crear Producto</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-  </div>
-  <div class="modal-body">
-    <form>
+    </div>
+    <div class="modal-body">
+        <form>
 
-      <div class="form-group">
+            <div class="form-group">
 
-        <label>Titulo</label>
-        <input type="text" class="form-control" formControlName="title">
+                <label>Titulo</label>
+                <input type="text" class="form-control" formControlName="title">
 
-        <label>Descripcion</label>
-        <input type="text" class="form-control" formControlName="description">
-
-        <label>Precio</label>
-        <input type="number" class="form-control" formControlName="price">
+                <label>Descripcion</label>
+                <input type="text" class="form-control" formControlName="description">
 
 
-      </div>
+                <label>Precio</label>
+                <input type="text" class="form-control" formControlName="price">
 
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="crearProducto(modal)">Guardar Producto</button>
-  </div>
+
+
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="crearProducto(modal)">Guardar Producto</button>
+    </div>
 </ng-template>
 
 <!-- Modal para listar los productos -->
 
 <ng-template #content2 let-modal [formGroup]="productForm">
-  <div class="modal-header" >
-    <h4 class="modal-title" id="modal-basic-title2">Carrito de compras</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title2">Carrito de compras</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
-  </div>
-  <div class="modal-body">
+    </div>
+    <div class="modal-body">
 
-    <table class="table table-striped" *ngIf="productService.carrito.length > 0">
-      <thead>
-      <tr>
-        <th scope="col">Item</th>
-        <th scope="col">Cantidad</th>
-        <th scope="col">Precio</th>
-        <th scope="col">Acción</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let item of this.productService.carrito; index as i">
-        <th scope="row">{{item.title}}</th>
-        <td>
-          <button class="btn btn-danger">-</button> 1 <button class="btn btn-success">+</button>
-        </td>
-        <td>$ {{ item.price | number }}</td>
-        <td>
-          <button class="btn btn-secondary" (click)="borrarDelCarrito(item)">
+        <table class="table table-striped" *ngIf="this.cart.length > 0">
+            <thead>
+                <tr>
+                    <th scope="col">Item</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Subtotal</th>
+                    <th scope="col">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of this.cart; index as i">
+                    <th scope="row">{{item.title}}</th>
+                    <td>
+                        <button [ngClass]="{'disabled': item.quanti ==1} " (click)="removeElementFromCart(item.id)" class="btn btn-danger">-</button> {{item.quanti}}
+                        <button (click)="addElementToCart(item.id)" class="btn btn-success">+</button>
+                    </td>
+                    <td> {{ item.price | currency }}</td>
+                    <td> {{ item.price * item.quanti | currency }}</td>
+                    <td>
+                        <button class="btn btn-secondary" (click)="borrarDelCarrito(item)">
             <i class="fas fa-trash-alt"></i>
           </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">Total</td>
+                    <td colspan="3">{{getTotal() | currency}}</td>
+                </tr>
+            </tbody>
+        </table>
 
-    <h1 *ngIf="productService.carrito.length <= 0">No hay productos en el carrito</h1>
+        <h1 *ngIf="cart.length <= 0">No hay productos en el carrito</h1>
 
 
-  </div>
-  <div class="modal-footer">
-    <button type="button"
-            class="btn btn-outline-dark"
-            (click)="pagar(modal)"
-            *ngIf="productService.carrito.length > 0"
-    >Realizar pago</button>
-  </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="pagar(modal)" *ngIf="cart.length > 0">Realizar pago</button>
+    </div>
 </ng-template>
