@@ -1,41 +1,49 @@
-import { Component, OnInit } from '@angular/core';
-import {ProductService} from "../../services/product.service";
-import {Product} from "../../interfaces/product";
-import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {NgbModal, ModalDismissReasons} from "@ng-bootstrap/ng-bootstrap";
-import Swal from "sweetalert2";
+import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { ProductService } from '../../services/product.service';
+import { Product } from '../../interfaces/product';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2';
+import { Cart } from '../../interfaces/cart';
+import { CartService } from 'src/app/services/cart.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-
   public products: Product[] = [];
   public productForm!: FormGroup;
   closeResult = '';
   private formSubmitted: boolean = false;
-  public carrito: Product[] = [];
+  cart: Cart[] = [];
 
-  constructor( public productService: ProductService,
-               private fb: FormBuilder,
-               private modalService: NgbModal) { }
+  constructor(
+    public productService: ProductService,
+    private fb: FormBuilder,
+    private modalService: NgbModal,
+    public _cartService: CartService
+  ) {}
 
   ngOnInit(): void {
-   this.obtenerProductos();
-   this.productForm = this.fb.group({
+    this.obtenerProductos();
+    this.productForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', [Validators.required]],
       price: ['', Validators.pattern('[0-9]*')],
-   });
+    });
+    this._cartService.getCart().subscribe((data) => {
+      this.cart = data;
+    });
   }
 
   /**
    * Funcion para eliminar un item del carrito
    */
-  borrarDelCarrito(item: Product){
+  borrarDelCarrito(item: Cart) {
     Swal.fire({
       title: '¿Desea quitar ' + item.title + ' del carrito?',
       showCancelButton: true,
@@ -43,58 +51,64 @@ export class HomeComponent implements OnInit {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        this.productService.carrito = this.productService.carrito.filter(product => product !== item);
-        Swal.fire('Eliminado', `El producto ${item.title} fue quitado del carrito`, 'success');
+        this._cartService.removeItemFromCart(item.id);
+        Swal.fire(
+          'Eliminado',
+          `El producto ${item.title} fue quitado del carrito`,
+          'success'
+        );
       }
-    })
-
+    });
   }
 
   /**
    * Funcion para obtener los productos disponibles en la tienda
    */
-  obtenerProductos(){
-    this.productService.obtenerProductos()
-      .subscribe( (products) =>{
-        this.products = products;
-      })
+  obtenerProductos() {
+    this.productService.obtenerProductos().subscribe((products) => {
+      this.products = products;
+    });
   }
 
   /**
    * Funcion para realizar la creación de un nuevo producto en la tienda
    * @param modal
    */
-  crearProducto(modal: any){
+  crearProducto(modal: any) {
     console.log(this.productForm.value);
 
     // TODO: falta mostrarle el error al usuario del campo que no es correcto
-    if(this.productForm.invalid){
-      console.log('Hay errores')
+    if (this.productForm.invalid) {
+      console.log('Hay errores');
       return;
     }
 
     //Crear el producto
-    this.productService.crearProducto( this.productForm.value )
-      .subscribe( (response: any) => {
+    this.productService
+      .crearProducto(this.productForm.value)
+      .subscribe((response: any) => {
         console.log(response);
         this.obtenerProductos();
-      });
+      }, console.log);
 
     // Si el producto tiene sus campos correctos, entonces cierra el modal.
     modal.close('Save click');
 
     //Mensaje de confirmacion de que el producto se creo
-    Swal.fire('Creado', 'Producto creado Satisfactoriamente!', 'success',);
-
+    Swal.fire('Creado', 'Producto creado Satisfactoriamente!', 'success');
   }
 
   /**
    * Funcion para simular un pago
    * @param modal
    */
-  pagar(modal: any){
-    this.productService.carrito = [];
-    Swal.fire('Pago realizado con exito!', 'Su pago se realizó satisfactoriamente', 'success');
+  pagar(modal: any) {
+    this._cartService.makePay();
+    Swal.fire(
+      'Pago realizado con exito!',
+      'Su pago se realizó satisfactoriamente',
+      'success'
+    );
     modal.close('Save click');
   }
 
@@ -112,11 +126,20 @@ export class HomeComponent implements OnInit {
 
   // Clases del ngbBootstrap
   open(content: any) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', size: "lg"}).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.modalService
+      .open(content, { ariaLabelledBy: 'modal-basic-title', size: 'lg' })
+      .result.then(
+        (result) => {
+          this.closeResult = `Closed with: ${result}`;
+        },
+        (reason) => {
+          this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+        }
+      );
+  }
+
+  getTotal() {
+    return this._cartService.getTotal();
   }
 
   private getDismissReason(reason: any): string {
@@ -128,5 +151,10 @@ export class HomeComponent implements OnInit {
       return `with: ${reason}`;
     }
   }
-
+  addElementToCart(id: number) {
+    this._cartService.addOneElementToCart(id);
+  }
+  removeElementFromCart(id: number) {
+    this._cartService.removeOneElementToCart(id);
+  }
 }

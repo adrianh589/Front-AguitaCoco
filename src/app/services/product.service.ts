@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {environment} from "../../environments/environment";
-import {Product} from "../interfaces/product";
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { Product } from '../interfaces/product';
+import { Cart } from '../interfaces/cart';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductService {
-
   base_url = environment.base_url;
   public carrito: Product[] = [];
 
-  constructor( private http: HttpClient ) { }
+  constructor(private http: HttpClient) {}
 
-  obtenerProductos(){
-    return this.http.get<Product[]>( `${this.base_url}/product`);
+  obtenerProductos() {
+    return this.http.get<Product[]>(`${this.base_url}/product`);
   }
 
-  crearProducto(product: Product){
+  crearProducto(product: Product) {
     return this.http.post(`${this.base_url}/product`, product);
   }
 

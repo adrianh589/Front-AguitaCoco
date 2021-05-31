@@ -1,35 +1,54 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ProductService} from "../../services/product.service";
-import {Product} from "../../interfaces/product";
-import Swal from "sweetalert2";
+import { Component, Input, OnInit } from '@angular/core';
+import { ProductService } from '../../services/product.service';
+import { Product } from '../../interfaces/product';
+import Swal from 'sweetalert2';
+import { CartService } from '../../services/cart.service';
+import { Cart } from '../../interfaces/cart';
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
-  styleUrls: ['./products.component.css']
+  styleUrls: ['./products.component.css'],
 })
 export class ProductsComponent implements OnInit {
-
   @Input() titulo: string = 'Este producto no tiene titulo';
-  @Input() descripcion: string = 'Este producto no tiene una descripcion actualmente';
+  @Input() descripcion: string =
+    'Este producto no tiene una descripcion actualmente';
   @Input() product!: Product;
 
-  constructor( private productService: ProductService ) { }
+  constructor(private _cartService: CartService) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  anadirAlcarrito(producto: Product){
-
-    // Si el producto fue agregado, no se puede volver a agregar
-    if (this.productService.carrito.find( pr => producto === pr)){
-      Swal.fire('No permitido', 'Este producto ya fue agregado al carrito', 'error');
+  anadirAlcarrito({ id, title, price }: Product) {
+    if (this._cartService.findExistingCart(id)) {
+      this.modalElementAlreadyAdded();
       return;
     }
-
-    // Agregar al carrito
-    Swal.fire('Producto agregado', `El producto ${producto.title} fue agregado al carrito`, 'success');
-    this.productService.carrito.push(producto);
+    const cart: Cart = {
+      id,
+      title,
+      price,
+      quanti: 1,
+    };
+    this._cartService.addOneElementToCart(cart);
+    this.modalElementAdded(title);
   }
 
+  private modalElementAlreadyAdded() {
+    Swal.fire(
+      'no permitido',
+      'este producto ya fue agregado al carro',
+      'error'
+    );
+    return;
+  }
+
+  private modalElementAdded(title: string) {
+    Swal.fire(
+      'Producto agregado',
+      `El producto ${title} fue agregado al carrito`,
+      'success'
+    );
+  }
 }
