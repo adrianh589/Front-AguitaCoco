@@ -1,0 +1,22 @@
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">¿Cuánto {{product.title}} desea?</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="form-group">
+                <div class="input-group">
+                    <input class="form-control" placeholder="cantidad que desea comprar" type="number" #quanti min="1" value="1" required>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="addToCart(quanti.value, modal)">Agregar</button>
+    </div>
+</ng-template>
+
+<button class="btn btn-lg btn-success" (click)="open(content)">Agregar al carrito</button>

@@ -6,8 +6,8 @@ import { Cart } from '../interfaces/cart';
   providedIn: 'root',
 })
 export class CartService {
-  cart$ = new Subject<Cart[]>();
-  cart: Cart[] = [];
+  private cart$ = new Subject<Cart[]>();
+  private cart: Cart[] = [];
 
   constructor() {}
 

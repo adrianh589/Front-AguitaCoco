@@ -1,11 +1,9 @@
-
 <div class="card">
-  <div class="card-body">
-    <h5 class="card-title"><span class="badge rounded-pill bg-primary">50% dto.</span> {{titulo}} </h5>
-    <p class="card-text">{{descripcion}}</p>
-    <div class="card-footer mb-2">$ {{product.price | number}}</div>
-    <div class="text-center">
-      <button type="button" class="btn btn-success" (click)="anadirAlcarrito(product)">Agregar al carrito</button>
+    <div class="card-body">
+        <h5 class="card-title">{{titulo}}</h5>
+        <p class="card-text">{{descripcion}}</p>
+        <div class="text-center">
+            <app-add-cart [product]="product"></app-add-cart>
+        </div>
     </div>
-  </div>
 </div>
