@@ -1,9 +1,38 @@
-<div class="card">
+<!-- <div class="card">
     <div class="card-body">
         <h5 class="card-title">{{titulo}}</h5>
         <p class="card-text">{{descripcion}}</p>
         <div class="text-center">
-            <app-add-cart [product]="product"></app-add-cart>
+        </div>
+    </div>
+</div> -->
+
+<!-- <div class="card">
+    <div class="card-header bg-primary text-light">
+        {{titulo}}
+    </div>
+    <div class="card-body">
+        <p class="card-text">{{descripcion}}</p>
+    </div>
+</div> -->
+<div class="card mb-3">
+    <div class="row g-0" style="max-width: 540px; height:250px">
+        <div class="col-md-4">
+            <img src="assets/img/noimage.png" width="100%" height="100%">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body vertically-justify">
+                <h3 class="card-title">{{titulo}}</h3>
+                <p class="card-text ">
+                    <small *ngIf="descripcion !== ''" class="text-justify">
+                    {{descripcion | truncateText:80}}
+                </small>
+                    <small *ngIf="descripcion === ''">
+                    texto no proveido
+                </small>
+                </p>
+                <app-add-cart [product]="product"></app-add-cart>
+            </div>
         </div>
     </div>
 </div>

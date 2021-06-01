@@ -2,21 +2,33 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Product } from '../interfaces/product';
+import { Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   base_url = environment.base_url;
+  private products: Product[] = [];
+  private products$: Subject<Product[]> = new Subject();
 
   constructor(private http: HttpClient) {}
 
   obtenerProductos() {
-    return this.http.get<Product[]>(`${this.base_url}/product`);
+    this.http
+      .get<Product[]>(`${this.base_url}/product`)
+      .subscribe((data: any) => {
+        this.products = data;
+        this.products$.next(this.products);
+      });
+    return this.products$.asObservable();
   }
 
   crearProducto(product: Product) {
-    return this.http.post(`${this.base_url}/product`, product);
+    this.http.post(`${this.base_url}/product`, product).subscribe((data) => {
+      this.products.push(product);
+      this.products$.next(this.products);
+    });
   }
-
 }

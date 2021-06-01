@@ -1,0 +1,6 @@
+.vertically-justify {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 100%
+}

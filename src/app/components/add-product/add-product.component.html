@@ -1,0 +1,47 @@
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Agrega un nuevo producto</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')"> 
+        <span aria-hidden="true">&times;</span>
+            </button>
+    </div>
+    <div class="modal-body">
+        <form>
+
+
+            <div class="form-group" [formGroup]="productForm">
+                <label>Titulo</label>
+                <input type="text" class="form-control" formControlName="title">
+                <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="alert alert-danger">
+
+                    <div *ngIf="title?.errors?.required">
+                        El titulo es requerido
+                    </div>
+                    <div *ngIf="title?.errors?.minLength">
+                        El titulo debe tener minimo 6 caracteres
+                    </div>
+
+                </div>
+                <label>Descripcion</label>
+                <input type="text" class="form-control" formControlName="description">
+                <label>Precio</label>
+                <input type="text" class="form-control" formControlName="price" type="number">
+                <div *ngIf="price?.invalid && (price?.dirty || price?.touched)" class="alert alert-danger">
+
+                    <div *ngIf="price?.errors?.required">
+                        El precio es requerido
+                    </div>
+                    <div *ngIf="price?.errors?.min">
+                        El precio minimo es 1
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-success btn-block  " (click)="crearProducto(modal)" [disabled]="!productForm.valid">Guardar Producto</button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<button class="btn btn-outline-primary mx-1" (click)="openVerticallyCentered(content)">Agregar nuevo producto</button>

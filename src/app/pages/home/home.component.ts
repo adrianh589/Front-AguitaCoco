@@ -27,6 +27,17 @@ export class HomeComponent implements OnInit {
     public _cartService: CartService
   ) {}
 
+  get title() {
+    return this.productForm.get('title');
+  }
+
+  get description() {
+    return this.productForm.get('description');
+  }
+  get price() {
+    return this.productForm.get('price');
+  }
+
   ngOnInit(): void {
     this.obtenerProductos();
     this.productForm = this.fb.group({
@@ -65,6 +76,7 @@ export class HomeComponent implements OnInit {
    */
   obtenerProductos() {
     this.productService.obtenerProductos().subscribe((products) => {
+      console.log(products);
       this.products = products;
     });
   }
@@ -83,12 +95,11 @@ export class HomeComponent implements OnInit {
     }
 
     //Crear el producto
-    this.productService
-      .crearProducto(this.productForm.value)
-      .subscribe((response: any) => {
-        console.log(response);
-        this.obtenerProductos();
-      }, console.log);
+    this.productService.crearProducto(this.productForm.value);
+    // .subscribe((response: any) => {
+    //   console.log(response);
+    //   this.obtenerProductos();
+    // }, console.log);
 
     // Si el producto tiene sus campos correctos, entonces cierra el modal.
     modal.close('Save click');
