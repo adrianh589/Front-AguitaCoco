@@ -7,7 +7,6 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { Cart } from '../../interfaces/cart';
 import { CartService } from 'src/app/services/cart.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',

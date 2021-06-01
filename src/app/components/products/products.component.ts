@@ -19,36 +19,4 @@ export class ProductsComponent implements OnInit {
   constructor(private _cartService: CartService) {}
 
   ngOnInit(): void {}
-
-  anadirAlcarrito({ id, title, price }: Product) {
-    if (this._cartService.findExistingCart(id)) {
-      this.modalElementAlreadyAdded();
-      return;
-    }
-    const cart: Cart = {
-      id,
-      title,
-      price,
-      quanti: 1,
-    };
-    this._cartService.addOneElementToCart(cart);
-    this.modalElementAdded(title);
-  }
-
-  private modalElementAlreadyAdded() {
-    Swal.fire(
-      'no permitido',
-      'este producto ya fue agregado al carro',
-      'error'
-    );
-    return;
-  }
-
-  private modalElementAdded(title: string) {
-    Swal.fire(
-      'Producto agregado',
-      `El producto ${title} fue agregado al carrito`,
-      'success'
-    );
-  }
 }

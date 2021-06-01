@@ -2,14 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Product } from '../interfaces/product';
-import { Cart } from '../interfaces/cart';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   base_url = environment.base_url;
-  public carrito: Product[] = [];
 
   constructor(private http: HttpClient) {}
 
