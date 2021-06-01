@@ -49,7 +49,10 @@ export class HomeComponent implements OnInit {
    */
   orderProductsAscendent(){
     this.productService.obtenerRecienteAntiguo()
-      .subscribe( res => this.products = res.products );
+      .subscribe( res => {
+        console.log(res.products)
+        this.products = res.products
+      } );
   }
 
   /**
@@ -57,7 +60,10 @@ export class HomeComponent implements OnInit {
    */
   orderProductsDescendent(){
     this.productService.obtenerAntiguoReciente()
-      .subscribe( res => this.products = res.products );
+      .subscribe( res => {
+        console.log(res.products)
+        this.products = res.products
+      } );
   }
 
   validPercent(input: string){
