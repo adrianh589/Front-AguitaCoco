@@ -12,6 +12,7 @@ export class CartService {
   constructor() {}
 
   addOneElementToCart(element: Cart | number) {
+    console.log(this.cart);
     if (typeof element === 'number') {
       const newCart = this.cart.filter((c: Cart) =>
         c.id === element ? { ...c, quanti: c.quanti++ } : c
@@ -54,4 +55,10 @@ export class CartService {
   findExistingCart(id: number) {
     return typeof this.cart.find((c) => c.id === id) !== 'undefined';
   }
+
+  // orderRecentToOld(){
+  //   this.cart.sort( (a,b) => {
+  //     return Date.parse(a.) - Date.parse(b);
+  //   });
+  // }
 }

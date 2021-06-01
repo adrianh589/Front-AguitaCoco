@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  base_url: 'http://localhost/project-aguita-coco/backend/web/index.php',
+  base_url: 'http://localhost/aguita-coco-backend/backend/web/index.php',
 };
 
 /*

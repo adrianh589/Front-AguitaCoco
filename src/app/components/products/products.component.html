@@ -1,7 +1,26 @@
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">{{titulo}}</h5>
+      <div *ngIf="product.value != 0">{{product.start_date | date}} - {{product.end_date | date}}</div>
+      <h5 class="card-title">
+          <span class="badge rounded-pill bg-primary">
+            {{product.value}}% dto.
+          </span>
+          {{titulo}}
+        </h5>
+
         <p class="card-text">{{descripcion}}</p>
+
+        <div class="card-footer mb-3" *ngIf="product.value == 0">
+          $ {{product.price | number}}
+        </div>
+
+      <div class="card-footer mb-3" *ngIf="product.value != 0">
+        $ <del>{{product.price | number}}</del>
+        <br>
+        $ {{product.price - ((product.price)*(product.value/100))}}
+      </div>
+
+
         <div class="text-center">
             <app-add-cart [product]="product"></app-add-cart>
         </div>

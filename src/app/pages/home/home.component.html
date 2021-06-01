@@ -6,8 +6,8 @@
         <!-- Barra de ordenar productos -->
         <select class="form-select">
       <option selected [disabled]="true">Ordenar</option>
-      <option value="1">Del mas reciente al mas antiguo</option>
-      <option value="2">Del mas antiguo al mas reciente</option>
+      <option (click)="orderProductsAscendent()">Del mas reciente al mas antiguo</option>
+      <option (click)="orderProductsDescendent()">Del mas antiguo al mas reciente</option>
     </select>
     </div>
 
@@ -26,11 +26,19 @@
 
 </div>
 
+<hr>
+<h2 class="text-center">Ofertas vigentes</h2>
+<hr>
+
 <!-- Productos listados -->
 <div class="row">
 
     <div class="col-3 my-3" *ngFor="let product of products">
-        <app-products [titulo]="product.title" [descripcion]="product.description" [product]="product" #product.id></app-products>
+        <app-products [titulo]="product.title"
+                      [descripcion]="product.description"
+                      [product]="product"
+        >
+        </app-products>
     </div>
 
 </div>
@@ -57,14 +65,72 @@
 
 
                 <label>Precio</label>
-                <input type="text" class="form-control" formControlName="price">
+                <input type="text"
+                       class="form-control"
+                       formControlName="price"
+                       (keypress)="($event.charCode >= 48 && $event.charCode < 58)"
+                >
 
+              <hr>
+              <h4> Descuento </h4>
+              <div class="input-group mb-3">
+                <input type="number" class="form-control"
+                       formControlName="value"
+                       #dto
+                       (keyup) = " validPercent(dto.value) "
+                       (focusout)="validPercent(dto.value)"
+                       (keypress)="($event.charCode >= 48 && $event.charCode < 58)"
+                >
+                <div class="input-group-append">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
 
+              <div class="row" *ngIf=" !isNull(dto.value) ">
+                <div class="col">
+                  <label> Fecha inicio </label>
+                  <form class="form-inline">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <input class="form-control" placeholder="yyyy-mm-dd"
+                               name="dp" ngbDatepicker #d="ngbDatepicker"
+                               formControlName="start_date"
+                               [readOnly]="true"
+                        >
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="col">
+                  <label> Fecha fin </label>
+                  <form class="form-inline">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <input class="form-control" placeholder="yyyy-mm-dd"
+                               name="dp" ngbDatepicker #d2="ngbDatepicker"
+                              formControlName="end_date"
+                               [readOnly]="true"
+                        >
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary calendar" (click)="d2.toggle()" type="button"></button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
 
             </div>
 
         </form>
     </div>
+  <pre>
+    {{ this.productForm.value | json }}
+  </pre>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="crearProducto(modal)">Guardar Producto</button>
     </div>
