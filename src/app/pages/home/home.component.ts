@@ -76,7 +76,6 @@ export class HomeComponent implements OnInit {
    */
   obtenerProductos() {
     this.productService.obtenerProductos().subscribe((products) => {
-      console.log(products);
       this.products = products;
     });
   }

@@ -16,7 +16,7 @@ export class ProductsComponent implements OnInit {
     'Este producto no tiene una descripcion actualmente';
   @Input() product!: Product;
 
-  constructor(private _cartService: CartService) {}
+  constructor() {}
 
   ngOnInit(): void {}
 }

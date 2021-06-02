@@ -26,9 +26,11 @@ export class ProductService {
   }
 
   crearProducto(product: Product) {
-    this.http.post(`${this.base_url}/product`, product).subscribe((data) => {
-      this.products.push(product);
-      this.products$.next(this.products);
-    });
+    this.http
+      .post(`${this.base_url}/product`, product)
+      .subscribe((data: any) => {
+        this.products.push(data);
+        this.products$.next(this.products);
+      });
   }
 }
