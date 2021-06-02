@@ -57,10 +57,10 @@ export class CartComponent implements OnInit {
     return this._cartService.getTotal();
   }
 
-  addElementToCart(id: number) {
+  addElementToCart(id: number | undefined) {
     this._cartService.addOneElementToCart(id);
   }
-  removeElementFromCart(id: number) {
+  removeElementFromCart(id: number | undefined) {
     this._cartService.removeOneElementToCart(id);
   }
   open(content: any) {

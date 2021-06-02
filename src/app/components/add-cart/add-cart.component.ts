@@ -4,6 +4,7 @@ import { CartService } from 'src/app/services/cart.service';
 import { Product } from '../../interfaces/product';
 import { Cart } from '../../interfaces/cart';
 import Swal from 'sweetalert2';
+import {toJSDate} from "@ng-bootstrap/ng-bootstrap/datepicker/ngb-calendar";
 
 @Component({
   selector: 'app-add-cart',
@@ -18,6 +19,9 @@ export class AddCartComponent implements OnInit {
     title: '',
     description: '',
     price: -1,
+    value: 0,
+    start_date: '',
+    end_date: ''
   };
 
   constructor(

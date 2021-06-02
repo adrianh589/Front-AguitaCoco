@@ -1,12 +1,13 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../interfaces/product';
-import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal, ModalDismissReasons, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { Cart } from '../../interfaces/cart';
 import { CartService } from 'src/app/services/cart.service';
+import {isNull} from "@angular/compiler/src/output/output_ast";
+import {isEmpty} from "rxjs/operators";
 
 @Component({
   selector: 'app-home',
@@ -19,6 +20,7 @@ export class HomeComponent implements OnInit {
   closeResult = '';
   private formSubmitted: boolean = false;
   cart: Cart[] = [];
+  model!: NgbDateStruct;
 
   constructor(
     public productService: ProductService,
@@ -41,9 +43,12 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerProductos();
     this.productForm = this.fb.group({
-      title: ['', Validators.required],
-      description: ['', [Validators.required]],
-      price: ['', Validators.pattern('[0-9]*')],
+      title: ['Probando CORS', Validators.required],
+      description: ['CORS', [Validators.required]],
+      price: ['666', Validators.pattern('[0-9]*')],
+      value: ['13', [Validators.required]],
+      start_date: [''],
+      end_date: ['']
     });
     this._cartService.getCart().subscribe((data) => {
       this.cart = data;
@@ -51,32 +56,52 @@ export class HomeComponent implements OnInit {
   }
 
   /**
-   * Funcion para eliminar un item del carrito
+   * Ordenar los productos del mas reciente al mas antiguo
    */
-  borrarDelCarrito(item: Cart) {
-    Swal.fire({
-      title: '¿Desea quitar ' + item.title + ' del carrito?',
-      showCancelButton: true,
-      confirmButtonText: `Quitar`,
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-        this._cartService.removeItemFromCart(item.id);
-        Swal.fire(
-          'Eliminado',
-          `El producto ${item.title} fue quitado del carrito`,
-          'success'
-        );
-      }
-    });
+  orderProductsAscendent(){
+    this.productService.obtenerRecienteAntiguo()
+      // .subscribe( res => {
+      //   console.log(res.products)
+      //   this.products = res.products
+      // } );
+  }
+
+  /**
+   * Ordenar los productos del mas antiguo al mas reciente
+   */
+  orderProductsDescendent(){
+    this.productService.obtenerAntiguoReciente()
+      // .subscribe( res => {
+      //   console.log(res.products)
+      //   this.products = res.products
+      // } );
+  }
+
+  validPercent(input: string){
+    if(Number(input) > 100){
+      this.productForm.get('value')?.setValue('100');
+    }
+  }
+
+  /**
+   * Verificar Si el descuento es nulo para evitar poner las fechas
+   * @param input Recibe el valor del campo Descuento
+   */
+  isNull(input: string){
+    if(input === '' || input.startsWith('0') || input === null){
+      this.productForm.get('start_date')?.setValue('');
+      this.productForm.get('end_date')?.setValue('');
+      return true;
+    }
+    return false;
   }
 
   /**
    * Funcion para obtener los productos disponibles en la tienda
    */
   obtenerProductos() {
-    this.productService.obtenerProductos().subscribe((products) => {
-      this.products = products;
+    this.productService.obtenerProductos().subscribe((res:any) => {
+      this.products = res;
     });
   }
 
@@ -88,9 +113,29 @@ export class HomeComponent implements OnInit {
     console.log(this.productForm.value);
 
     // TODO: falta mostrarle el error al usuario del campo que no es correcto
+
+    // Corregir descuento vacio
+    if(this.productForm.get('value')?.value === '' || this.productForm.get('value')?.value === null){
+      this.productForm.get('value')?.setValue(0);
+    }
+
     if (this.productForm.invalid) {
       console.log('Hay errores');
       return;
+    }
+
+    // Parsear fecha inicio
+    if(this.productForm.get('start_date')?.value !== '' ){
+      const {day, month, year} = this.productForm.get('start_date')?.value;
+      const fecha = `${year}-${month}-${day}`;
+      this.productForm.get('start_date')?.setValue(fecha);
+    }
+
+    // Parsear fecha final
+    if(this.productForm.get('end_date')?.value !== '' ){
+      const {day, month, year} = this.productForm.get('end_date')?.value;
+      const fecha = `${year}-${month}-${day}`;
+      this.productForm.get('end_date')?.setValue(fecha);
     }
 
     //Crear el producto
@@ -102,35 +147,6 @@ export class HomeComponent implements OnInit {
 
     // Si el producto tiene sus campos correctos, entonces cierra el modal.
     modal.close('Save click');
-
-    //Mensaje de confirmacion de que el producto se creo
-    Swal.fire('Creado', 'Producto creado Satisfactoriamente!', 'success');
-  }
-
-  /**
-   * Funcion para simular un pago
-   * @param modal
-   */
-  pagar(modal: any) {
-    this._cartService.makePay();
-    Swal.fire(
-      'Pago realizado con exito!',
-      'Su pago se realizó satisfactoriamente',
-      'success'
-    );
-    modal.close('Save click');
-  }
-
-  /**
-   * Funcion para validar los campos del usuario
-   * @param campo
-   */
-  campoNoValido(campo: string): boolean {
-    if (this.productForm.get(campo)?.invalid && this.formSubmitted) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
   // Clases del ngbBootstrap
@@ -147,11 +163,7 @@ export class HomeComponent implements OnInit {
       );
   }
 
-  getTotal() {
-    return this._cartService.getTotal();
-  }
-
-  private getDismissReason(reason: any): string {
+  getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
@@ -159,11 +171,5 @@ export class HomeComponent implements OnInit {
     } else {
       return `with: ${reason}`;
     }
-  }
-  addElementToCart(id: number) {
-    this._cartService.addOneElementToCart(id);
-  }
-  removeElementFromCart(id: number) {
-    this._cartService.removeOneElementToCart(id);
   }
 }

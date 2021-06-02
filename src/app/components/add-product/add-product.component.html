@@ -34,6 +34,31 @@
                     <div *ngIf="price?.errors?.min">
                         El precio minimo es 1
                     </div>
+                </div>
+                <button type="button" (click)="addDiscount = !addDiscount" class="btn btn-secondary mt-2" style="width:100%">Agregar descuento</button>
+                <div *ngIf="addDiscount">
+
+                    <label>Descuento</label>
+                    <input type="text" class="form-control" formControlName="discount" type="number">
+                    <div *ngIf="discount?.invalid && (discount?.dirty || discount?.touched)" class="alert alert-danger">
+
+                        <div *ngIf="discount?.errors?.min">
+                            El descuento minimo es 0%
+                        </div>
+                        <div *ngIf="discount?.errors?.max">
+                            El descuento maximo es del 99%
+                        </div>
+                    </div>
+                    <label>Seleccione la fecha del descuento</label>
+
+                    <ngb-datepicker #dp (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" outsideDays="hidden">
+                    </ngb-datepicker>
+
+                    <ng-template #t let-date let-focused="focused">
+                        <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                        {{ date.day }}
+                    </span>
+                    </ng-template>
 
                 </div>
             </div>
