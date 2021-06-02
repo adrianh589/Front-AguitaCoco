@@ -11,19 +11,19 @@ export class CartService {
 
   constructor() {}
 
-  addOneElementToCart(element: Cart | number) {
-    console.log(this.cart);
-    if (typeof element === 'number') {
-      const newCart = this.cart.filter((c: Cart) =>
-        c.id === element ? { ...c, quanti: c.quanti++ } : c
-      );
-      return this.cart$.next(newCart);
+  addOneElementToCart(element: Cart | number | undefined) {
+    if (typeof element === 'undefined') return;
+    if (typeof element === 'object') {
+      this.cart.push({ ...element });
+      return this.cart$.next(this.cart);
     }
-    this.cart.push({ ...element });
-    return this.cart$.next(this.cart);
+    const newCart = this.cart.filter((c: Cart) =>
+      c.id === element ? { ...c, quanti: c.quanti++ } : c
+    );
+    return this.cart$.next(newCart);
   }
 
-  removeItemFromCart(id: number) {
+  removeItemFromCart(id: number | undefined) {
     this.cart = this.cart.filter((c) => c.id !== id);
     this.cart$.next(this.cart);
   }
@@ -41,7 +41,7 @@ export class CartService {
     return total;
   }
 
-  removeOneElementToCart(id: number) {
+  removeOneElementToCart(id: number | undefined) {
     const newCart = this.cart.filter((e) =>
       e.id === id ? { ...e, quanti: e.quanti--, total: e.quanti * e.price } : e
     );
@@ -52,7 +52,7 @@ export class CartService {
     return this.cart$.asObservable();
   }
 
-  findExistingCart(id: number) {
+  findExistingCart(id: number | undefined) {
     return typeof this.cart.find((c) => c.id === id) !== 'undefined';
   }
 

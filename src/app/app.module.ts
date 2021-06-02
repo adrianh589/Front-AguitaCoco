@@ -16,6 +16,8 @@ import {
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CartComponent } from './components/cart/cart.component';
 import { AddCartComponent } from './components/add-cart/add-cart.component';
+import { AddProductComponent } from './components/add-product/add-product.component';
+import { TruncateTextPipe } from './pipes/truncate-text.pipe';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { AddCartComponent } from './components/add-cart/add-cart.component';
     HomeComponent,
     CartComponent,
     AddCartComponent,
+    AddProductComponent,
+    TruncateTextPipe,
   ],
   imports: [
     BrowserModule,

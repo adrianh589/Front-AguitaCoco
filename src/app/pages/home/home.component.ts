@@ -29,6 +29,17 @@ export class HomeComponent implements OnInit {
     public _cartService: CartService
   ) {}
 
+  get title() {
+    return this.productForm.get('title');
+  }
+
+  get description() {
+    return this.productForm.get('description');
+  }
+  get price() {
+    return this.productForm.get('price');
+  }
+
   ngOnInit(): void {
     this.obtenerProductos();
     this.productForm = this.fb.group({
@@ -49,10 +60,10 @@ export class HomeComponent implements OnInit {
    */
   orderProductsAscendent(){
     this.productService.obtenerRecienteAntiguo()
-      .subscribe( res => {
-        console.log(res.products)
-        this.products = res.products
-      } );
+      // .subscribe( res => {
+      //   console.log(res.products)
+      //   this.products = res.products
+      // } );
   }
 
   /**
@@ -60,10 +71,10 @@ export class HomeComponent implements OnInit {
    */
   orderProductsDescendent(){
     this.productService.obtenerAntiguoReciente()
-      .subscribe( res => {
-        console.log(res.products)
-        this.products = res.products
-      } );
+      // .subscribe( res => {
+      //   console.log(res.products)
+      //   this.products = res.products
+      // } );
   }
 
   validPercent(input: string){
@@ -89,8 +100,8 @@ export class HomeComponent implements OnInit {
    * Funcion para obtener los productos disponibles en la tienda
    */
   obtenerProductos() {
-    this.productService.obtenerProductos().subscribe((res) => {
-      this.products = res.products;
+    this.productService.obtenerProductos().subscribe((res:any) => {
+      this.products = res;
     });
   }
 
@@ -128,17 +139,11 @@ export class HomeComponent implements OnInit {
     }
 
     //Crear el producto
-    this.productService
-      .crearProducto(this.productForm.value)
-      .subscribe((response: any) => {
-        console.log(response);
-        //Mensaje de confirmacion de que el producto se creo
-        Swal.fire('Creado', 'Producto creado Satisfactoriamente!', 'success');
-        this.obtenerProductos();
-      }, error => {
-        //Mensaje de confirmacion de que el producto se creo
-        Swal.fire('Error', error.error.error[0].end_date[0], 'error');
-      });
+    this.productService.crearProducto(this.productForm.value);
+    // .subscribe((response: any) => {
+    //   console.log(response);
+    //   this.obtenerProductos();
+    // }, console.log);
 
     // Si el producto tiene sus campos correctos, entonces cierra el modal.
     modal.close('Save click');

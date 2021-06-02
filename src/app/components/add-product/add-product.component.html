@@ -1,0 +1,72 @@
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Agrega un nuevo producto</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')"> 
+        <span aria-hidden="true">&times;</span>
+            </button>
+    </div>
+    <div class="modal-body">
+        <form>
+
+
+            <div class="form-group" [formGroup]="productForm">
+                <label>Titulo</label>
+                <input type="text" class="form-control" formControlName="title">
+                <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="alert alert-danger">
+
+                    <div *ngIf="title?.errors?.required">
+                        El titulo es requerido
+                    </div>
+                    <div *ngIf="title?.errors?.minLength">
+                        El titulo debe tener minimo 6 caracteres
+                    </div>
+
+                </div>
+                <label>Descripcion</label>
+                <input type="text" class="form-control" formControlName="description">
+                <label>Precio</label>
+                <input type="text" class="form-control" formControlName="price" type="number">
+                <div *ngIf="price?.invalid && (price?.dirty || price?.touched)" class="alert alert-danger">
+
+                    <div *ngIf="price?.errors?.required">
+                        El precio es requerido
+                    </div>
+                    <div *ngIf="price?.errors?.min">
+                        El precio minimo es 1
+                    </div>
+                </div>
+                <button type="button" (click)="addDiscount = !addDiscount" class="btn btn-secondary mt-2" style="width:100%">Agregar descuento</button>
+                <div *ngIf="addDiscount">
+
+                    <label>Descuento</label>
+                    <input type="text" class="form-control" formControlName="discount" type="number">
+                    <div *ngIf="discount?.invalid && (discount?.dirty || discount?.touched)" class="alert alert-danger">
+
+                        <div *ngIf="discount?.errors?.min">
+                            El descuento minimo es 0%
+                        </div>
+                        <div *ngIf="discount?.errors?.max">
+                            El descuento maximo es del 99%
+                        </div>
+                    </div>
+                    <label>Seleccione la fecha del descuento</label>
+
+                    <ngb-datepicker #dp (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" outsideDays="hidden">
+                    </ngb-datepicker>
+
+                    <ng-template #t let-date let-focused="focused">
+                        <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)" [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                        {{ date.day }}
+                    </span>
+                    </ng-template>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-success btn-block  " (click)="crearProducto(modal)" [disabled]="!productForm.valid">Guardar Producto</button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<button class="btn btn-outline-primary mx-1" (click)="openVerticallyCentered(content)">Agregar nuevo producto</button>

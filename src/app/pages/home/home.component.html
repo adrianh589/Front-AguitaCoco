@@ -1,25 +1,28 @@
 <!-- Barra de ordenar y boton de crear y carrito de compras -->
-<div class="row mt-3">
+<div class="row my-3">
 
     <!-- Columna de ordenar -->
     <div class="col-6">
         <!-- Barra de ordenar productos -->
-        <select class="form-select">
+        <!-- <select class="form-select">
       <option selected [disabled]="true">Ordenar</option>
       <option (click)="orderProductsAscendent()">Del mas reciente al mas antiguo</option>
-      <option (click)="orderProductsDescendent()">Del mas antiguo al mas reciente</option>
-    </select>
+      <option (click)="orderProductsDescendent()">Del mas antiguo al mas reciente</option> -->
+        <!-- </select> -->
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button (click)="orderProductsAscendent()" type="button" class="btn btn-secondary">del mas antiguo al reciente</button>
+            <button (click)="orderProductsDescendent()" type="button" class="btn btn-secondary">del mas reciente al antiguo</button>
+        </div>
     </div>
 
     <!-- Columna carrito y crear producto -->
     <div class="col-6">
         <!-- Boton crear -->
-        <button class="btn btn-success mx-1" (click)="open(content)">
-      Crear nuevo producto
-    </button>
+        <app-add-product></app-add-product>
+
 
         <!-- Carrito de compras -->
-        <app-cart #content2></app-cart>
+        <app-cart></app-cart>
 
 
     </div>
@@ -33,18 +36,14 @@
 <!-- Productos listados -->
 <div class="row">
 
-    <div class="col-3 my-3" *ngFor="let product of products">
-        <app-products [titulo]="product.title"
-                      [descripcion]="product.description"
-                      [product]="product"
-        >
-        </app-products>
+    <div class="col-12 col-md-6" *ngFor="let product of products">
+        <app-products [product]="product" #product.id></app-products>
     </div>
 
 </div>
 
 <!-- Modal para la creacion de productos -->
-
+<!-- 
 <ng-template #content let-modal [formGroup]="productForm">
     <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">Crear Producto</h4>
@@ -134,4 +133,4 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="crearProducto(modal)">Guardar Producto</button>
     </div>
-</ng-template>
+</ng-template> -->
