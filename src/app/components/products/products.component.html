@@ -6,19 +6,26 @@
         <div class="col-md-8">
             <div class="card-body vertically-justify">
                 <h3 class="card-title">{{product.title}}</h3>
-                <p class="card-text ">
-
-                    <span *ngIf="product.description !== ''" class="text-justify">
-                        {{product.description | truncateText:80}}
-                    </span>
-                    <span *ngIf="product.description === ''">
-                        texto no proveido
-                    </span>
-                </p>
-                <p class="card-text text-muted">
-
-                    {{product.price | currency}}
-                </p>
+                <div placement="top" [ngbTooltip]="tipContent">
+                    <p class="card-text">
+                        <small *ngIf="product.description !== ''" class="text-justify">
+                            {{product.description | truncateText:120}}
+                        </small>
+                        <small *ngIf="product.description === ''">
+                            texto no proveido
+                        </small>
+                    </p>
+                    <ng-template #tipContent>
+                        <p class="card-text">
+                            <small *ngIf="product.description !== ''" class="text-justify">
+                                {{product.description}}
+                            </small>
+                            <small *ngIf="product.description === ''">
+                                texto no proveido
+                            </small>
+                        </p>
+                    </ng-template>
+                </div>
                 <app-add-cart [product]="product"></app-add-cart>
             </div>
 
@@ -35,14 +42,26 @@
         <div class="col-md-8">
             <div class="card-body vertically-justify">
                 <h3 class="card-title">{{product.title}}</h3>
-                <p class="card-text ">
-                    <small *ngIf="product.description !== ''" class="text-justify">
-                        {{product.description | truncateText:120}}
-                    </small>
-                    <small *ngIf="product.description === ''">
-                        texto no proveido
-                    </small>
-                </p>
+                <div placement="top" [ngbTooltip]="tipContent">
+                    <p class="card-text">
+                        <small *ngIf="product.description !== ''" class="text-justify">
+                            {{product.description | truncateText:120}}
+                        </small>
+                        <small *ngIf="product.description === ''">
+                            texto no proveido
+                        </small>
+                    </p>
+                    <ng-template #tipContent>
+                        <p class="card-text">
+                            <small *ngIf="product.description !== ''" class="text-justify">
+                                {{product.description | truncateText:120}}
+                            </small>
+                            <small *ngIf="product.description === ''">
+                                texto no proveido
+                            </small>
+                        </p>
+                    </ng-template>
+                </div>
                 <p class="horizontally-justify">
                     <span class="card-text" style=" text-decoration: line-through; color: red">
                         {{product.price | currency}}
