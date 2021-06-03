@@ -97,7 +97,11 @@ export class AddProductComponent implements OnInit {
 
   private parseDate(date: NgbDate | null): string {
     if (date === null) return this.parseDate(this.fromDate);
-    return `${date.year}-${date.month}-${date.day}`;
+    let stringDay = date.day.toString();
+    let stringMonth = date.month.toString();
+    stringDay = (stringDay.length == 1) ? `0${stringDay}` : stringDay;
+    stringMonth = (stringMonth.length == 1) ? `0${stringMonth}` : stringMonth;
+    return `${date.year}-${stringMonth}-${stringDay}`;
   }
 
   onDateSelection(date: NgbDate) {

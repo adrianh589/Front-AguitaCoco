@@ -18,7 +18,7 @@ export class ProductService {
     this.http
       .get<Product[]>(`${this.base_url}/product/all-products`)
       .subscribe((data: any) => {
-        this.products = data;
+        this.products = data.products;
         this.products$.next(this.products);
       });
     return this.products$.asObservable();
